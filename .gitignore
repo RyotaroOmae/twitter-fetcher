@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets.*
+accounts.txt
+
+# Browser / Playwright session data
+pw_profile/
+playwright/.cache/
+playwright-report/
+test-results/
+traces/
+storage_state.json
+*.har
+
+# Generated output and debug dumps
+out.md
+out.png
+out_cards/
+debug.html
+pw_debug.html
+user_cache.json
+*.log
+
+# Local workspace metadata
+.agents/
+.codex/
+
+# OS files
+.DS_Store
+Thumbs.db
