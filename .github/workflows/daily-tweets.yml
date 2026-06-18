@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 22 * * *'  # 毎朝 07:00 JST
   workflow_dispatch:
+    inputs:
+      no_dedup:
+        description: 'Skip seen_tweets.json (re-fetch all tweets)'
+        type: boolean
+        default: false
 
 jobs:
   fetch-and-post:
@@ -41,7 +46,10 @@ jobs:
         env:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: python post_tweets.py --include-self-replies
+        run: |
+          OPTS="--include-self-replies"
+          [ "${{ inputs.no_dedup }}" = "true" ] && OPTS="$OPTS --no-dedup"
+          python post_tweets.py $OPTS
 
       - name: Save seen tweets cache
         uses: actions/cache/save@v4
