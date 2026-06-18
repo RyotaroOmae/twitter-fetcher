@@ -45,7 +45,7 @@ jobs:
         env:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: python post_tweets.py
+        run: python post_tweets.py --include-self-replies
 
       - name: Save seen tweets cache
         uses: actions/cache/save@v4
