@@ -26,6 +26,7 @@ dist/
 *.p12
 *.pfx
 secrets.*
+accounts.txt
 seen_tweets.json
 
 # Browser / Playwright session data

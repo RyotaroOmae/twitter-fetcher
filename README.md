@@ -33,6 +33,7 @@ DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/XXXXX/XXXXX
 ### 3. 監視アカウントの設定
 
 `accounts.txt` に監視したいアカウントのハンドルを記述します（1行1アカウント）。
+このファイルは `.gitignore` で除外されているため、リポジトリには含まれません。
 
 ```
 # コメント行は無視されます
@@ -97,6 +98,7 @@ python xsum_api.py --accounts accounts.txt
 |---|---|
 | `X_BEARER_TOKEN` | X API の Bearer Token |
 | `DISCORD_WEBHOOK_URL` | Discord Webhook URL |
+| `ACCOUNTS_TXT` | 監視アカウントの一覧（改行区切り、例: `@OpenAI\nanthropic`） |
 
 ### スケジュール
 

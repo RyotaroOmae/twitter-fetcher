@@ -34,12 +34,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # accounts.txt はリポジトリにコミットして使用します。
-      # アカウント一覧を非公開にしたい場合は代わりに以下を有効化してください:
-      #   - GitHub Secrets に ACCOUNTS_TXT を登録（改行区切りのハンドル一覧）
-      #   - 下記ステップを追加:
-      # - name: Generate accounts.txt from secret
-      #   run: printf '%s\n' "${{ secrets.ACCOUNTS_TXT }}" > accounts.txt
+      - name: Generate accounts.txt from secret
+        run: printf '%s\n' "${{ secrets.ACCOUNTS_TXT }}" > accounts.txt
 
       - name: Fetch and post tweets
         env:
