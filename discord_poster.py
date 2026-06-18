@@ -48,44 +48,15 @@ def post_section(
     tweets as seen and retry the rest next run.
     """
     header = f"**@{handle}** — {date_str}"
-    cont_header = f"**@{handle}** (cont.) — {date_str}"
-
-    # Truncate any single line that exceeds the per-line budget.
-    safe_lines = [
-        line if len(line) <= _LINE_MAX else line[:_LINE_MAX - 3] + "..."
-        for line in lines
-    ]
-
-    # Build chunks, tracking the number of source lines each contains.
-    chunks: list[tuple[str, int]] = []  # (message_content, line_count)
-    current_header = header
-    current_lines: list[str] = []
-    current_len = len(current_header) + 1  # +1 for newline
-
-    for line in safe_lines:
-        needed = len(line) + 1  # +1 for newline
-        if current_lines and current_len + needed > DISCORD_MAX:
-            chunks.append((current_header + "\n" + "\n".join(current_lines), len(current_lines)))
-            current_header = cont_header
-            current_lines = []
-            current_len = len(current_header) + 1
-        current_lines.append(line)
-        current_len += needed
-
-    if current_lines:
-        chunks.append((current_header + "\n" + "\n".join(current_lines), len(current_lines)))
-
-    if not chunks:
-        return 0
-
-    if dry_run:
-        for content, _ in chunks:
-            print(f"[dry-run] would post:\n{content}\n")
-        return len(lines)
 
     posted = 0
-    for content, line_count in chunks:
-        if not _post_message(content, webhook_url):
-            return posted
-        posted += line_count
+    for line in lines:
+        safe_line = line if len(line) <= _LINE_MAX else line[:_LINE_MAX - 3] + "..."
+        content = f"{header}\n{safe_line}"
+        if dry_run:
+            print(f"[dry-run] would post:\n{content}\n")
+        else:
+            if not _post_message(content, webhook_url):
+                return posted
+        posted += 1
     return posted
