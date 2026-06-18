@@ -65,7 +65,7 @@ class XClient:
         params = {
             "start_time": iso_z(start),
             "end_time": iso_z(end),
-            "tweet.fields": "created_at,text",
+            "tweet.fields": "created_at,text,in_reply_to_user_id",
             "max_results": str(max_results),
         }
         if exclude:

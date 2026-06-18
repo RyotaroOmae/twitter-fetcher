@@ -71,7 +71,8 @@ python post_tweets.py --include-replies --include-rts
 | `--seen` | `seen_tweets.json` | 投稿済みツイート ID の記録ファイル |
 | `--date` | `yesterday` | `yesterday` または `YYYY-MM-DD`（JST） |
 | `--max` | `20` | 1アカウントあたりの最大取得件数（1〜100） |
-| `--include-replies` | off | リプライを含める |
+| `--include-replies` | off | 全リプライを含める |
+| `--include-self-replies` | off | 自分自身へのリプライ（スレッド）のみ含める |
 | `--include-rts` | off | リツイートを含める |
 | `--api-base` | `https://api.x.com/2` | X API のベース URL |
 | `--dry-run` | off | Discord に投稿せず標準出力に表示 |

@@ -79,6 +79,8 @@ def main() -> None:
     ap.add_argument("--date", default="yesterday", help="yesterday or YYYY-MM-DD (JST)")
     ap.add_argument("--max", type=int, default=20)
     ap.add_argument("--include-replies", action="store_true")
+    ap.add_argument("--include-self-replies", action="store_true",
+                    help="include replies to self (threads) but exclude replies to others")
     ap.add_argument("--include-rts", action="store_true")
     ap.add_argument("--api-base", default=DEFAULT_API_BASE)
     ap.add_argument("--dry-run", action="store_true")
@@ -107,7 +109,7 @@ def main() -> None:
     exclude_parts = []
     if not args.include_rts:
         exclude_parts.append("retweets")
-    if not args.include_replies:
+    if not args.include_replies and not args.include_self_replies:
         exclude_parts.append("replies")
     exclude_str = ",".join(exclude_parts)
 
@@ -149,6 +151,14 @@ def main() -> None:
             tweets,
             key=lambda t: dtparser.isoparse(t["created_at"]).astimezone(JST),
         )
+
+        if args.include_self_replies and not args.include_replies:
+            tweets_sorted = [
+                t for t in tweets_sorted
+                if t.get("in_reply_to_user_id") is None
+                or t.get("in_reply_to_user_id") == user_id
+            ]
+
         new_tweets = [t for t in tweets_sorted if t["id"] not in seen]
 
         if not new_tweets:
