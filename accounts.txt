@@ -1,0 +1,3 @@
+# X accounts to monitor (one handle per line)
+# Lines starting with # are ignored
+# @ prefix is optional
