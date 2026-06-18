@@ -83,6 +83,8 @@ def main() -> None:
                     help="include replies to self (threads) but exclude replies to others")
     ap.add_argument("--include-rts", action="store_true")
     ap.add_argument("--api-base", default=DEFAULT_API_BASE)
+    ap.add_argument("--no-dedup", action="store_true",
+                    help="ignore seen_tweets.json and do not update it (for testing)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -117,8 +119,7 @@ def main() -> None:
     cache_path = Path(args.cache)
     user_cache = load_cache(cache_path)
     seen_path = Path(args.seen)
-    seen = _load_seen(seen_path)
-    seen = _cleanup_seen(seen)
+    seen = {} if args.no_dedup else _cleanup_seen(_load_seen(seen_path))
 
     handles = read_accounts(Path(args.accounts))
     if not handles:
@@ -186,7 +187,8 @@ def main() -> None:
             for t in new_tweets[:posted_count]:
                 seen[t["id"]] = now_iso
             total_new += posted_count
-            _save_seen(seen_path, seen)  # persist per-handle to survive mid-run interruption
+            if not args.no_dedup:
+                _save_seen(seen_path, seen)  # persist per-handle to survive mid-run interruption
             if posted_count < len(new_tweets):
                 print(
                     f"[error] @{handle}: only {posted_count}/{len(new_tweets)} tweets posted,"
@@ -198,7 +200,8 @@ def main() -> None:
 
     if user_cache_changed:
         save_cache(cache_path, user_cache)
-    _save_seen(seen_path, seen)  # persist cleanup even when no new tweets
+    if not args.no_dedup:
+        _save_seen(seen_path, seen)  # persist cleanup even when no new tweets
 
     print(f"[done] posted {total_new} new tweets from {len(handles)} accounts", file=sys.stderr)
 
