@@ -71,6 +71,7 @@ python post_tweets.py --include-replies --include-rts
 | `--cache` | `user_cache.json` | ユーザー ID キャッシュのパス |
 | `--seen` | `seen_tweets.json` | 投稿済みツイート ID の記録ファイル |
 | `--date` | `yesterday` | `yesterday` または `YYYY-MM-DD`（JST） |
+| `--hours` | なし | 直近 N 時間分を取得（指定すると `--date` より優先） |
 | `--max` | `20` | 1アカウントあたりの最大取得件数（1〜100） |
 | `--include-replies` | off | 全リプライを含める |
 | `--include-self-replies` | off | 自分自身へのリプライ（スレッド）のみ含める |
@@ -102,7 +103,8 @@ python xsum_api.py --accounts accounts.txt
 
 ### スケジュール
 
-毎日 **07:00 JST**（22:00 UTC）に自動実行されます。
+**6時間ごと**（03:00 / 09:00 / 15:00 / 21:00 JST）に自動実行されます。
+直近7時間分のツイートを取得し、`seen_tweets.json` で重複を除外して投稿します。
 
 手動実行は Actions タブ → "Daily Tweets" → **Run workflow** から可能です。
 

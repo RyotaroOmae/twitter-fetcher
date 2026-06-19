@@ -2,7 +2,7 @@ name: Daily Tweets
 
 on:
   schedule:
-    - cron: '0 22 * * *'  # 毎朝 07:00 JST
+    - cron: '0 */6 * * *'  # 6時間ごと (03:00 / 09:00 / 15:00 / 21:00 JST)
   workflow_dispatch:
     inputs:
       no_dedup:
@@ -47,7 +47,7 @@ jobs:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          OPTS="--include-self-replies"
+          OPTS="--include-self-replies --hours 7"
           [ "${{ inputs.no_dedup }}" = "true" ] && OPTS="$OPTS --no-dedup"
           python post_tweets.py $OPTS
 

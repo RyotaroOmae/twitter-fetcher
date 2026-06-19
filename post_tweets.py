@@ -77,6 +77,7 @@ def main() -> None:
     ap.add_argument("--cache", default="user_cache.json")
     ap.add_argument("--seen", default="seen_tweets.json")
     ap.add_argument("--date", default="yesterday", help="yesterday or YYYY-MM-DD (JST)")
+    ap.add_argument("--hours", type=int, default=None, help="fetch tweets from the last N hours (overrides --date)")
     ap.add_argument("--max", type=int, default=20)
     ap.add_argument("--include-replies", action="store_true")
     ap.add_argument("--include-self-replies", action="store_true",
@@ -99,7 +100,10 @@ def main() -> None:
         sys.exit(1)
 
     now = datetime.now(tz=JST)
-    if args.date == "yesterday":
+    if args.hours is not None:
+        end = now
+        start = now - timedelta(hours=args.hours)
+    elif args.date == "yesterday":
         start, end = yesterday_range_jst(now)
     else:
         d = datetime.strptime(args.date, "%Y-%m-%d").replace(tzinfo=JST)
