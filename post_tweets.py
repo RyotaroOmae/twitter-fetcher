@@ -84,6 +84,7 @@ def main() -> None:
                     help="include replies to self (threads) but exclude replies to others")
     ap.add_argument("--include-rts", action="store_true")
     ap.add_argument("--api-base", default=DEFAULT_API_BASE)
+    ap.add_argument("--output", default=None, help="write markdown summary to this file")
     ap.add_argument("--no-dedup", action="store_true",
                     help="ignore seen_tweets.json and do not update it (for testing)")
     ap.add_argument("--dry-run", action="store_true")
@@ -132,6 +133,7 @@ def main() -> None:
 
     user_cache_changed = False
     total_new = 0
+    summary_sections: list[str] = []
 
     for handle in handles:
         if handle not in user_cache:
@@ -191,6 +193,7 @@ def main() -> None:
             for t in new_tweets[:posted_count]:
                 seen[t["id"]] = now_iso
             total_new += posted_count
+            summary_sections.append(f"## @{handle}\n" + "\n".join(lines[:posted_count]))
             if not args.no_dedup:
                 _save_seen(seen_path, seen)  # persist per-handle to survive mid-run interruption
             if posted_count < len(new_tweets):
@@ -206,6 +209,14 @@ def main() -> None:
         save_cache(cache_path, user_cache)
     if not args.no_dedup:
         _save_seen(seen_path, seen)  # persist cleanup even when no new tweets
+
+    if args.output:
+        range_label = f"last {args.hours}h" if args.hours else date_str
+        body = "\n\n".join(summary_sections) if summary_sections else "(no new tweets)"
+        Path(args.output).write_text(
+            f"# {date_str} ({range_label})\n\n{body}\n\n(total: {total_new} new tweets)\n",
+            encoding="utf-8",
+        )
 
     print(f"[done] posted {total_new} new tweets from {len(handles)} accounts", file=sys.stderr)
 

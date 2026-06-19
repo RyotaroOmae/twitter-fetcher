@@ -47,9 +47,17 @@ jobs:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          OPTS="--include-self-replies --hours 7"
+          OPTS="--include-self-replies --hours 7 --output summary.md"
           [ "${{ inputs.no_dedup }}" = "true" ] && OPTS="$OPTS --no-dedup"
           python post_tweets.py $OPTS
+
+      - name: Upload tweet summary
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tweet-summary-${{ github.run_id }}
+          path: summary.md
+          if-no-files-found: ignore
 
       - name: Save seen tweets cache
         uses: actions/cache/save@v4
