@@ -9,6 +9,10 @@ on:
         description: 'Skip seen_tweets.json (re-fetch all tweets)'
         type: boolean
         default: false
+      save_artifact:
+        description: 'Upload tweet summary as artifact'
+        type: boolean
+        default: false
 
 jobs:
   fetch-and-post:
@@ -47,13 +51,14 @@ jobs:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          OPTS="--include-self-replies --hours 7 --output summary.md"
+          OPTS="--include-self-replies --hours 7"
           [ "${{ inputs.no_dedup }}" = "true" ] && OPTS="$OPTS --no-dedup"
+          [ "${{ inputs.save_artifact }}" = "true" ] && OPTS="$OPTS --output summary.md"
           python post_tweets.py $OPTS
 
       - name: Upload tweet summary
         uses: actions/upload-artifact@v4
-        if: always()
+        if: inputs.save_artifact == true
         with:
           name: tweet-summary-${{ github.run_id }}
           path: summary.md
