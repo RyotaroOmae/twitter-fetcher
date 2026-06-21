@@ -103,7 +103,7 @@ python xsum_api.py --accounts accounts.txt
 
 ### スケジュール
 
-**6時間ごと**（03:00 / 09:00 / 15:00 / 21:00 JST）に自動実行されます。
+**6時間ごと**（10:00 / 16:00 / 22:00 / 04:00 JST）に自動実行されます。
 直近7時間分のツイートを取得し、`seen_tweets.json` で重複を除外して投稿します。
 
 手動実行は Actions タブ → "Daily Tweets" → **Run workflow** から可能です。

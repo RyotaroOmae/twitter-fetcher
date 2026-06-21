@@ -2,7 +2,7 @@ name: Daily Tweets
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # 6時間ごと (03:00 / 09:00 / 15:00 / 21:00 JST)
+    - cron: '0 1/6 * * *'  # 6時間ごと (10:00 / 16:00 / 22:00 / 04:00 JST)
   workflow_dispatch:
     inputs:
       no_dedup:
